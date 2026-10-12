@@ -1,0 +1,127 @@
+{
+  "currency": "TRY",
+  "timezone": "Europe/Istanbul",
+  "locale": "en-GB",
+  "policy": {
+    "same_price_for_everyone": true,
+    "negotiation": false,
+    "session_ttl_minutes": 30,
+    "quote_ttl_minutes": 30,
+    "max_questions_per_session": 60,
+    "menu": [
+      {
+        "id": "card_note",
+        "label": "Card message",
+        "fee": 0
+      },
+      {
+        "id": "vase",
+        "label": "Glass vase",
+        "fee": 250
+      }
+    ]
+  },
+  "id": "tulip-house",
+  "name": "Tulip House",
+  "tagline": "The same feeling. A different flower.",
+  "role": "partial",
+  "brand": {
+    "primary": "#705447",
+    "accent": "#e4bcb3"
+  },
+  "catalog": {
+    "as_of": "2026-10-12T09:00:00+03:00",
+    "products": [
+      {
+        "sku": "LE-25R",
+        "name": "25 Red Roses",
+        "flower": "rose",
+        "color": "red",
+        "stems": 25,
+        "price": 1250,
+        "in_stock": false,
+        "stock_qty": 0,
+        "card_note": {
+          "available": true,
+          "max_chars": 120,
+          "fee": 0
+        },
+        "substitutes": [
+          "LE-25P",
+          "LE-20T"
+        ],
+        "image": "/images/red-roses.webp",
+        "description": "A classic bouquet of red roses."
+      },
+      {
+        "sku": "LE-25P",
+        "name": "25 Pink Roses",
+        "flower": "rose",
+        "color": "pink",
+        "stems": 25,
+        "price": 1100,
+        "in_stock": true,
+        "stock_qty": 6,
+        "card_note": {
+          "available": true,
+          "max_chars": 120,
+          "fee": 0
+        },
+        "substitutes": [],
+        "image": "/images/pink-roses.webp",
+        "description": "Fresh pink roses with delicate greenery."
+      },
+      {
+        "sku": "LE-20T",
+        "name": "20 Red Tulips",
+        "flower": "tulip",
+        "color": "red",
+        "stems": 20,
+        "price": 950,
+        "in_stock": true,
+        "stock_qty": 6,
+        "card_note": {
+          "available": true,
+          "max_chars": 120,
+          "fee": 0
+        },
+        "substitutes": [],
+        "image": "/images/red-tulips.webp",
+        "description": "Elegant red tulips in a natural paper wrap."
+      }
+    ],
+    "delivery_zones": [
+      {
+        "zone": "kadikoy",
+        "label": "Kadikoy",
+        "same_day": true,
+        "next_day_from": "10:00",
+        "fee": 0,
+        "eta_text": "today by 20:00",
+        "cutoff_local": "20:00"
+      },
+      {
+        "zone": "besiktas",
+        "label": "Besiktas",
+        "same_day": false,
+        "next_day_from": "10:00",
+        "fee": 110,
+        "eta_text": "tomorrow from 10:00"
+      },
+      {
+        "zone": "uskudar",
+        "label": "Uskudar",
+        "same_day": true,
+        "next_day_from": "10:00",
+        "fee": 60,
+        "eta_text": "today by 19:30",
+        "cutoff_local": "19:30"
+      }
+    ],
+    "returns": "Fresh flowers are non-returnable. If damaged on delivery, a replacement is free within 2 hours.",
+    "reviews": {
+      "verified_count": 193,
+      "avg": 4.6
+    }
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "at": "2026-10-12T12:10:43.460Z",
+  "origin": "http://localhost:3000",
+  "checks": [
+    "three independent source-backed outcomes",
+    "delivery-inclusive price",
+    "tenant-isolated handles",
+    "English conversation continuity",
+    "card message",
+    "deterministic quote",
+    "transcript handoff",
+    "server-rendered merchant handoff",
+    "explicit POST order",
+    "order idempotency",
+    "private audit log"
+  ],
+  "responses": [
+    {
+      "tenant": "tulip-house",
+      "status": "partial",
+      "mode": {
+        "extraction": "rules",
+        "composition": "model",
+        "referee": "model_and_rules",
+        "models": {
+          "composer": "anthropic/claude-sonnet-5.5",
+          "judge": "openai/gpt-6.1-sol"
+        },
+        "usage": {
+          "calls": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": null
+        }
+      },
+      "check": "filtered"
+    },
+    {
+      "tenant": "rose-and-stem",
+      "status": "yes",
+      "mode": {
+        "extraction": "rules",
+        "composition": "model",
+        "referee": "model_and_rules",
+        "models": {
+          "composer": "anthropic/claude-sonnet-5.5",
+          "judge": "openai/gpt-6.1-sol"
+        },
+        "usage": {
+          "calls": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": null
+        }
+      },
+      "check": "filtered"
+    },
+    {
+      "tenant": "petal-atelier",
+      "status": "no",
+      "mode": {
+        "extraction": "rules",
+        "composition": "model",
+        "referee": "model_and_rules",
+        "models": {
+          "composer": "anthropic/claude-sonnet-5.5",
+          "judge": "openai/gpt-6.1-sol"
+        },
+        "usage": {
+          "calls": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "cost_usd": null
+        }
+      },
+      "check": "pass"
+    }
+  ],
+  "success": true
+}

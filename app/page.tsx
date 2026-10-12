@@ -1,0 +1,79 @@
+import Link from 'next/link';
+import { ChatGPTLaunch } from '@/components/chatgpt-launch';
+import { DEMO_QUESTION } from '@/lib/demo';
+
+export const metadata = {
+  title: 'AskAgent — Protocol v0.1',
+  description: 'A link-based HTTP protocol for websites to answer assistants using their own data and rules.',
+};
+
+export const dynamic = 'force-dynamic';
+
+export default function Home() {
+  const origin = (process.env.BASE_URL || process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || 'https://askagent-demo.contact-e55.workers.dev').replace(/\/$/, '');
+  const questionUrl = `${origin}/t/rose-and-stem/askagent?ask=${encodeURIComponent('Send 25 red roses to Kadikoy today by 20:00, under 1500 TRY including delivery.')}`;
+
+  return <main id="main" className="protocol-document">
+    <header className="document-header">
+      <h1>AskAgent</h1>
+      <p className="document-version">Protocol v0.1</p>
+      <p className="document-summary">A website can answer your assistant through a link.</p>
+    </header>
+
+    <section>
+      <h2>What it does</h2>
+      <p>AskAgent is an HTTP interface between a website and an assistant. The website’s agent responds on behalf of its business, using its own catalog, stock, delivery rules, and published prices.</p>
+      <p>The user gives their assistant a link and a request. The assistant discovers what the site can do, asks questions, verifies the answers, and brings a prepared result back to the user. The website receives a request it can actually fulfill.</p>
+    </section>
+
+    <section>
+      <h2>1. Discover the website</h2>
+      <p>Open the site’s discovery endpoint. It describes the available agents, capabilities, scenario context, and links for the next step.</p>
+      <pre><code>{`GET ${origin}/askagent`}</code></pre>
+      <p><Link href="/askagent" prefetch={false}>Read this site’s discovery response</Link>.</p>
+    </section>
+
+    <section>
+      <h2>2. Ask in natural language</h2>
+      <p>Send a URL-encoded question in the <code>ask</code> parameter. Each website agent checks the request against its own source data. It can return a match, a clear rejection, an alternative, or a clarifying question.</p>
+      <pre><code>{`GET ${origin}/t/rose-and-stem/askagent?ask=Send%2025%20red%20roses%20to%20Kadikoy%20today`}</code></pre>
+      <p><Link href={questionUrl} prefetch={false}>Open an example question</Link>. A response includes a readable answer, facts, requirements, and labeled next links.</p>
+    </section>
+
+    <section>
+      <h2>3. Continue the same conversation</h2>
+      <p>The response returns an opaque conversation handle, <code>h</code>. Follow the supplied continuation link and preserve that handle when asking a follow-up. The agent retains the request’s budget, location, timing, and card message.</p>
+      <pre><code>{`GET ${origin}/t/rose-and-stem/askagent?h=OPAQUE_HANDLE&ask=Add%20the%20card%20message%20Happy%20birthday%2C%20Mom`}</code></pre>
+      <p>A transcript link lets another assistant read and continue the conversation. Handles expire after 30 minutes and should be treated as private access links.</p>
+    </section>
+
+    <section>
+      <h2>4. Check evidence and the quote</h2>
+      <p>Follow the response’s <code>evidence</code> link to inspect catalog facts. Follow its <code>quote</code> link to verify the product, delivery charge, optional services, and total.</p>
+      <p>Stock, price, and delivery eligibility are enforced by catalog rules. When models are available, a second model also checks the answer against the supplied facts. The response reports whether it used models or a rules-only fallback.</p>
+    </section>
+
+    <section>
+      <h2>5. Hand off for a human decision</h2>
+      <p>The agent returns a prepared product page containing the selected item, current quote, delivery terms, and card message. The human reviews those terms and explicitly confirms the next action.</p>
+      <p>Opening a GET link never creates an order. This demo creates an order only after the user confirms it on the website. No payment or real delivery takes place.</p>
+    </section>
+
+    <section>
+      <h2>Integration and current limits</h2>
+      <p>The interface uses ordinary HTTPS requests and returned links. It requires no MCP setup or custom connector registration. The assistant needs working web access and must be able to follow the website’s next links.</p>
+      <p>Native ChatGPT compatibility is currently partial: reading merchant pages and comparing catalog information has been observed. The dynamic question endpoint timed out in that test, so conversation continuity, saved notes, and handoff have not yet been verified in native ChatGPT.</p>
+      <p>The catalogs and orders on this site are demonstration data. A fixed Istanbul scenario time makes delivery comparisons repeatable. The <Link href="/panel">activity view</Link> reports actual requests and handoffs; deliberately injected referee checks are labeled as synthetic.</p>
+      <p><Link href="/protocol">Read the protocol walkthrough</Link>.</p>
+    </section>
+
+    <section className="document-test">
+      <h2>Test this scenario</h2>
+      <p>Ask your assistant to compare three independent florists. Each has its own stock, delivery schedule, and prices.</p>
+      <blockquote>{DEMO_QUESTION}</blockquote>
+      <p>The assistant should explain which shop meets the request, which cannot, and which offers an alternative. It should return a verified prepared-order link for you to review.</p>
+      <ChatGPTLaunch siteOrigin={origin} />
+      <p className="document-test-note">The button provides the complete prompt and this site’s public URL.</p>
+    </section>
+  </main>;
+}

@@ -1,0 +1,173 @@
+{
+  "updated_at": "2026-10-12T13:02:04Z",
+  "origin": "https://askagent-hackathon-demo.pages.dev",
+  "deployment": {
+    "status": "passed",
+    "platform": "Cloudflare Pages proxy and Cloudflare Worker",
+    "worker_version": "a136874f-f895-4bf6-8813-2babb8852265",
+    "custom_domain": false
+  },
+  "browser": {
+    "surface": "Codex in-app browser",
+    "merchant_flow_verified_worker_version": "c6c62718-f549-44f3-8cad-1ad760326c6c",
+    "homepage": {
+      "status": "passed",
+      "verified_worker_version": "a136874f-f895-4bf6-8813-2babb8852265",
+      "evidence": "The published English protocol-document homepage was confirmed in the production in-app browser on desktop.",
+      "screenshot": "artifacts/screenshots/production-protocol-document.png"
+    },
+    "public_example_get": {
+      "status": "passed",
+      "continue_link": "passed",
+      "quote_link": "passed",
+      "card_message_preserved": true,
+      "quote_total_try": 1370,
+      "evidence": "The actual published example GET and its returned Continue link worked in the in-app browser. The returned quote link verified the saved note and 1,370 TRY total. This browser result is separate from native ChatGPT compatibility."
+    },
+    "merchant_comparison": {
+      "status": "passed",
+      "evidence": "The production browser playground returned three independent catalog-backed outcomes for the same 25-red-rose request.",
+      "outcomes": [
+        {
+          "merchant": "Rose & Stem",
+          "status": "yes",
+          "stems": 25,
+          "flower": "red roses",
+          "product_price_try": 1280,
+          "delivery_fee_try": 90,
+          "total_try": 1370,
+          "delivery": "today at 19:30"
+        },
+        {
+          "merchant": "Petal Atelier",
+          "status": "no",
+          "stems": 20,
+          "product_price_try": 1150,
+          "delivery_fee_try": 120,
+          "total_try": 1270,
+          "delivery": "tomorrow at 10:00",
+          "reasons": [
+            "Insufficient stems",
+            "Cannot deliver today"
+          ]
+        },
+        {
+          "merchant": "Tulip House",
+          "status": "partial",
+          "stems": 25,
+          "flower": "pink roses",
+          "product_price_try": 1100,
+          "delivery_fee_try": 0,
+          "total_try": 1100,
+          "delivery": "today at 20:00",
+          "reason": "Red roses are out of stock; pink roses are an alternative"
+        }
+      ]
+    },
+    "conversation_continuity": {
+      "status": "passed",
+      "evidence": "The production merchant page preserved the follow-up card message and the original stem count, budget, delivery district, and deadline."
+    },
+    "quote": {
+      "status": "passed",
+      "total_try": 1370,
+      "product_price_try": 1280,
+      "delivery_fee_try": 90,
+      "delivery": "today at 19:30",
+      "evidence": "The server-rendered product handoff showed the saved selection and delivery-inclusive quote using a merchant link from the source evidence."
+    },
+    "human_handoff": {
+      "status": "passed",
+      "card_message_preserved": true,
+      "handle_removed_from_address_bar": true,
+      "selection_constraints": {
+        "stems_min": 25,
+        "budget_try": 1500,
+        "deadline_local": "20:00"
+      },
+      "evidence": "A direct merchant product link with the session handle rendered the prepared selection; client JavaScript then removed the handle from the address bar. The old playground action was bypassed because of its JSON-negotiation bug."
+    },
+    "simulated_order": {
+      "status": "passed",
+      "total_try": 1370,
+      "delivery": "today at 19:30",
+      "explicit_human_confirmation": true,
+      "payment_taken": false,
+      "evidence": "With fictional recipient/address inputs and the confirmation checkbox selected, Create Demo Order returned a confirmation displaying the correct total, delivery, and no-payment notice.",
+      "screenshot": "artifacts/screenshots/production-order.png",
+      "idempotency": "Not repeated in the production browser; covered by the local HTTP smoke test."
+    }
+  },
+  "prepared_order_fix": {
+    "status": "deployed",
+    "change": "Programmatic quote and checkout GETs explicitly request format=json and Accept: application/json. Human-facing protocol links retain their default representation.",
+    "validation": "npm run typecheck passed",
+    "production_retest": "Playground button retest pending; direct merchant handoff has passed"
+  },
+  "native_fetch_latency_fix": {
+    "status": "deployed",
+    "change": "All model stages share one default 7000 ms deadline; later stages use the remaining time or return the existing honest provider fallback.",
+    "validation": "The focused mocked-provider test and npm run typecheck passed.",
+    "production_retest": "Browser example GET passed; native agent question remains unverified"
+  },
+  "local_revision_validation": {
+    "homepage": {
+      "status": "passed",
+      "surface": "Codex in-app browser, local mobile viewport",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "evidence": "The English protocol-document homepage fits the viewport without horizontal overflow, omits the previous hero/shop/playground/activity sections, and retains the canonical-origin native ChatGPT prompt CTA.",
+      "screenshot": "artifacts/screenshots/protocol-document-mobile.png",
+      "production_retest": "Passed on production desktop; production mobile was not separately checked"
+    },
+    "unit_tests": {
+      "status": "passed",
+      "passed": 33,
+      "total": 33
+    },
+    "typecheck": {
+      "status": "passed",
+      "scope": "Before the final quantity-extraction revision"
+    }
+  },
+  "automated_http_smoke": {
+    "status": "unavailable",
+    "failure_layer": "before HTTP",
+    "evidence": "Node fetch, Python urllib, and bounded IPv4 curl could resolve the production domain but received TLS connection resets before an HTTP response. No simulated order was created by these attempts.",
+    "local_smoke_report": "artifacts/smoke-result.json",
+    "local_smoke_is_production_evidence": false
+  },
+  "native_chatgpt": {
+    "status": "partial",
+    "surface": "An existing conversation in native ChatGPT, inspected in the user's browser",
+    "storefront_catalog_comparison": {
+      "status": "passed",
+      "evidence": "ChatGPT read the storefront pages and compared their public catalog itself: 25 red roses at 1,370 TRY for today at 19:30, 20 red roses at 1,270 TRY for tomorrow, and a shop without red-rose stock. ChatGPT explicitly said the website's agent did not answer; this is not evidence of a completed AskAgent conversation."
+    },
+    "agent_discovery": {
+      "status": "passed",
+      "evidence": "ChatGPT's web tool could read all three merchant AskAgent discovery endpoints."
+    },
+    "dynamic_agent_question": {
+      "status": "unverified",
+      "evidence": "ChatGPT's web tool could not reach either the short question GET or the original question GET. No response from the site's agent was observed."
+    },
+    "dynamic_order_preparation": {
+      "status": "unverified",
+      "evidence": "ChatGPT reported an endpoint timeout in the earlier attempt. Later question URLs were inaccessible to its web tool; actual conversation, quote, card-message continuity, and session checkout could not be verified."
+    },
+    "card_message_continuity": {
+      "status": "unverified"
+    },
+    "session_checkout": {
+      "status": "unverified"
+    },
+    "latest_revision_retest": "partial",
+    "latest_revision_evidence": "A new native ChatGPT attempt read all three discovery endpoints, but question URL access failed and no site-agent reply, conversation handle, or quote was returned. A further direct example-link attempt is still in progress."
+  },
+  "cross_assistant_transcript": {
+    "status": "untested"
+  }
+}

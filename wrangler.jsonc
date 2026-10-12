@@ -1,0 +1,44 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "askagent-demo",
+  "account_id": "e5539802cd5992acd0fe5c053d68ca7d",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-10-12",
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
+  "workers_dev": true,
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "askagent-demo"
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "ASKAGENT_DB",
+      "database_name": "askagent-hackathon-demo",
+      "database_id": "1b0f3f71-7acf-4acb-a44d-f398a55f04b4",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "BASE_URL": "https://askagent-hackathon-demo.pages.dev",
+    "NEXT_PUBLIC_SITE_URL": "https://askagent-hackathon-demo.pages.dev",
+    "DEMO_CLOCK_ISO": "2026-10-12T17:00:00+03:00",
+    "EXTRACT_MODEL": "anthropic/claude-haiku-5.5",
+    "COMPOSE_MODEL": "anthropic/claude-sonnet-5.5",
+    "REFEREE_MODEL": "openai/gpt-6.1-sol",
+    "MODEL_TIMEOUT_MS": "12000",
+    "MODEL_BUDGET_MS": "2000"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "preview_urls": true
+}

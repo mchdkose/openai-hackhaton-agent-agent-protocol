@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.next/
+.data/
+coverage/
+test-results/
+playwright-report/
+*.tsbuildinfo
+.DS_Store
+.vercel/
+.qa/
+.tools/
+.open-next/
+.wrangler/
+.dev.vars*
