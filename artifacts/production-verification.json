@@ -20,9 +20,10 @@
       "status": "passed",
       "continue_link": "passed",
       "quote_link": "passed",
+      "checkout_envelope": "passed",
       "card_message_preserved": true,
       "quote_total_try": 1370,
-      "evidence": "The actual published example GET and its returned Continue link worked in the in-app browser. The returned quote link verified the saved note and 1,370 TRY total. This browser result is separate from native ChatGPT compatibility."
+      "evidence": "The complete production GET chain worked in the in-app browser: published example question, returned Continue link, verified quote, and checkout envelope. The saved card message persisted and the quote total was 1,370 TRY. This browser result is separate from native ChatGPT compatibility."
     },
     "merchant_comparison": {
       "status": "passed",
@@ -141,7 +142,7 @@
   },
   "native_chatgpt": {
     "status": "partial",
-    "surface": "An existing conversation in native ChatGPT, inspected in the user's browser",
+    "surface": "Native ChatGPT browser conversations inspected by the root agent",
     "storefront_catalog_comparison": {
       "status": "passed",
       "evidence": "ChatGPT read the storefront pages and compared their public catalog itself: 25 red roses at 1,370 TRY for today at 19:30, 20 red roses at 1,270 TRY for tomorrow, and a shop without red-rose stock. ChatGPT explicitly said the website's agent did not answer; this is not evidence of a completed AskAgent conversation."
@@ -152,7 +153,7 @@
     },
     "dynamic_agent_question": {
       "status": "unverified",
-      "evidence": "ChatGPT's web tool could not reach either the short question GET or the original question GET. No response from the site's agent was observed."
+      "evidence": "ChatGPT's web tool could not reach either the short question GET or the original question GET. A later direct click of the published question link reported 400 Timeout fetching. No response from the site's agent was observed; this web-tool error does not establish the application's HTTP response status."
     },
     "dynamic_order_preparation": {
       "status": "unverified",
@@ -165,7 +166,8 @@
       "status": "unverified"
     },
     "latest_revision_retest": "partial",
-    "latest_revision_evidence": "A new native ChatGPT attempt read all three discovery endpoints, but question URL access failed and no site-agent reply, conversation handle, or quote was returned. A further direct example-link attempt is still in progress."
+    "latest_revision_evidence": "New native ChatGPT attempts read all three discovery endpoints, but question URL access and a direct question-link click failed. No site-agent reply, conversation handle, quote, or checkout was returned. The web tool presented an older homepage without the newly published Open example question link.",
+    "web_tool_homepage_freshness": "An older homepage was observed; production in-app browser showed the revised document."
   },
   "cross_assistant_transcript": {
     "status": "untested"
