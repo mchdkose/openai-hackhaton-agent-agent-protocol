@@ -71,8 +71,8 @@ describe('grounded catalog decisions',()=>{
     expect(selectCatalog(tenant,{...reqs(),deadline_local:'19:00'}).matches[0].eligible).toBe(false);
   });
   it('does not silently substitute a district the merchant does not serve',()=>{
-    const requirements=extractRules('Ataşehir’e bugün kırmızı gül 1500 TL',tenant);
-    expect(requirements.zone).toBe('atasehir');
+    const requirements=extractRules('Red roses to Sariyer today, under 1500 TRY',tenant);
+    expect(requirements.zone).toBe('sariyer');
     const result=selectCatalog(tenant,requirements);expect(result.verdict).toBe('no');expect(result.matches[0].reasons).toContain('delivery_zone_unavailable');
   });
   it('preserves conversation constraints while changing the flower color',()=>{
@@ -109,6 +109,28 @@ describe('quotes and handoff',()=>{
     expect(await transact(state=>Object.keys(state.orders).length)).toBe(0);
     const [first,second]=await Promise.all([createDemoOrder({tenant:'rose-and-stem',h,sku:'GB-25R'}),createDemoOrder({tenant:'rose-and-stem',h,sku:'GB-25R'})]);
     expect(first.orderId).toBe(second.orderId);expect((await readLogs()).filter(log=>log.route==='handoff_completed')).toHaveLength(1);
+  });
+  it('verifies checkout from saved requirements without a prior quote and preserves the card message',async()=>{
+    const answer=await handleAsk('rose-and-stem',question),h=answer.h!;
+    expect((await readSession('rose-and-stem',h))?.quote).toBeUndefined();
+    await expect(createDemoOrder({tenant:'rose-and-stem',h,sku:'GB-25R'})).rejects.toMatchObject({code:'quote_required'});
+    const checkout=await handleSessionRoute('rose-and-stem','checkout',new Request(`http://localhost:3000/t/rose-and-stem/askagent/checkout?h=${h}&sku=GB-25R`));
+    expect(checkout).toMatchObject({status:'yes',quote:{sku:'GB-25R',total:1370,eligible:true},requirements:{note:'Happy birthday, Mom.',stems_min:25,budget:1500}});
+    expect(checkout.next[0].url).toContain('/p/GB-25R');
+    expect((await readSession('rose-and-stem',h))?.quote?.id).toBe(checkout.quote?.id);
+    expect(await getProductPageData('rose-and-stem','GB-25R',h)).toMatchObject({note:'Happy birthday, Mom.',quote:{total:1370,eligible:true}});
+    expect(await transact(state=>Object.keys(state.orders).length)).toBe(0);
+    const quoted=await handleSessionRoute('rose-and-stem','quote',new Request(`http://localhost:3000/t/rose-and-stem/askagent/quote?h=${h}&sku=GB-25R&zone=kadikoy`));
+    const link=quoted.next.find(next=>next.rel==='checkout')!;
+    expect(new URL(link.url).searchParams.get('quote_id')).toBe(quoted.quote?.id);
+  });
+  it('does not make an ineligible selection orderable by preparing checkout directly',async()=>{
+    const answer=await handleAsk('rose-and-stem',question),h=answer.h!;
+    const checkout=await handleSessionRoute('rose-and-stem','checkout',new Request(`http://localhost:3000/t/rose-and-stem/askagent/checkout?h=${h}&sku=GB-15R`));
+    expect(checkout).toMatchObject({status:'no',quote:{eligible:false}});
+    expect(checkout.quote?.reasons).toContain('stems_below_minimum');
+    await expect(createDemoOrder({tenant:'rose-and-stem',h,sku:'GB-15R'})).rejects.toMatchObject({code:'quote_invalid'});
+    expect(await transact(state=>Object.keys(state.orders).length)).toBe(0);
   });
   it('rejects cross-origin human confirmation',()=>{
     expect(()=>verifyOrigin(new Request('http://localhost:3000/api/order',{method:'POST',headers:{Origin:'https://evil.example'}}))).toThrow(ProtocolError);

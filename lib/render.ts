@@ -12,8 +12,8 @@ export function markdown(envelope:AskEnvelope):string {
 }
 export function respond(envelope:AskEnvelope,request:Request,status=200):Response {
   const url=new URL(request.url),format=url.searchParams.get('format');
-  const headers:Record<string,string>={'Cache-Control':'private, no-store, max-age=0','X-Robots-Tag':'noindex, nofollow','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff','Vary':'Accept'};
-  if(format==='json'){headers['Content-Type']='application/json; charset=utf-8';return new Response(JSON.stringify(envelope),{status,headers});}
+  const headers:Record<string,string>={'Cache-Control':'private, no-store, max-age=0','X-Robots-Tag':'noindex, nofollow','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff','Vary':'Accept','Access-Control-Allow-Origin':'*'};
+  if(format==='json'||(!format&&request.headers.get('accept')?.includes('application/json'))){headers['Content-Type']='application/json; charset=utf-8';return new Response(JSON.stringify(envelope),{status,headers});}
   const md=markdown(envelope);
   if(format==='html'||(!format&&request.headers.get('accept')?.includes('text/html'))){
     headers['Content-Type']='text/html; charset=utf-8';

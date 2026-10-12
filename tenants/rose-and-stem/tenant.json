@@ -88,6 +88,99 @@
         "substitutes": [],
         "image": "/images/red-roses.webp",
         "description": "A simple bouquet of red roses."
+      },
+      {
+        "sku": "GB-12W",
+        "name": "12 White Roses",
+        "flower": "rose",
+        "color": "white",
+        "stems": 12,
+        "price": 590,
+        "in_stock": true,
+        "stock_qty": 4,
+        "card_note": {
+          "available": true,
+          "max_chars": 120,
+          "fee": 0
+        },
+        "substitutes": [],
+        "image": "/images/white-flowers.svg",
+        "description": "12 white roses in a natural paper wrap. Standard wrapping and a short card message are included."
+      },
+      {
+        "sku": "GB-20T",
+        "name": "20 Red Tulips",
+        "flower": "tulip",
+        "color": "red",
+        "stems": 20,
+        "price": 850,
+        "in_stock": true,
+        "stock_qty": 5,
+        "card_note": {
+          "available": true,
+          "max_chars": 120,
+          "fee": 0
+        },
+        "substitutes": [],
+        "image": "/images/red-tulips.webp",
+        "description": "20 red tulips in a natural paper wrap. Standard wrapping and a short card message are included."
+      },
+      {
+        "sku": "GB-18P",
+        "name": "18 Pink Roses",
+        "flower": "rose",
+        "color": "pink",
+        "stems": 18,
+        "price": 820,
+        "in_stock": true,
+        "stock_qty": 2,
+        "card_note": {
+          "available": true,
+          "max_chars": 120,
+          "fee": 0
+        },
+        "substitutes": [],
+        "image": "/images/pink-roses.webp",
+        "description": "18 pink roses in a natural paper wrap. Standard wrapping and a short card message are included."
+      },
+      {
+        "sku": "GB-50R",
+        "name": "50 Red Roses",
+        "flower": "rose",
+        "color": "red",
+        "stems": 50,
+        "price": 2490,
+        "in_stock": true,
+        "stock_qty": 2,
+        "card_note": {
+          "available": true,
+          "max_chars": 120,
+          "fee": 0
+        },
+        "substitutes": [],
+        "image": "/images/red-roses.webp",
+        "description": "50 red roses in a natural paper wrap. Standard wrapping and a short card message are included."
+      },
+      {
+        "sku": "GB-30W",
+        "name": "30 White Roses",
+        "flower": "rose",
+        "color": "white",
+        "stems": 30,
+        "price": 1680,
+        "in_stock": false,
+        "stock_qty": 0,
+        "card_note": {
+          "available": true,
+          "max_chars": 120,
+          "fee": 0
+        },
+        "substitutes": [
+          "GB-12W",
+          "GB-25P"
+        ],
+        "image": "/images/white-flowers.svg",
+        "description": "30 white roses in a natural paper wrap. Standard wrapping and a short card message are included."
       }
     ],
     "delivery_zones": [
@@ -116,6 +209,31 @@
         "fee": 100,
         "eta_text": "today by 19:00",
         "cutoff_local": "19:00"
+      },
+      {
+        "zone": "sisli",
+        "label": "Sisli",
+        "same_day": false,
+        "next_day_from": "10:00",
+        "fee": 140,
+        "eta_text": "tomorrow from 10:00"
+      },
+      {
+        "zone": "beyoglu",
+        "label": "Beyoglu",
+        "same_day": false,
+        "next_day_from": "10:00",
+        "fee": 150,
+        "eta_text": "tomorrow from 10:00"
+      },
+      {
+        "zone": "atasehir",
+        "label": "Atasehir",
+        "same_day": true,
+        "next_day_from": "10:00",
+        "fee": 110,
+        "eta_text": "today by 18:30",
+        "cutoff_local": "18:30"
       }
     ],
     "returns": "Fresh flowers are non-returnable. If damaged on delivery, a replacement is free within 2 hours.",
@@ -123,5 +241,133 @@
       "verified_count": 412,
       "avg": 4.7
     }
+  },
+  "business_context": {
+    "about": {
+      "description": "Rose & Stem is an independent Istanbul florist represented in this demo. Its agent may answer questions and prepare quotes from the published catalog and policies.",
+      "currency": "TRY",
+      "price_policy": "Published prices apply equally to every customer. No bargaining or unlisted discounts.",
+      "demo_notice": "Products, inventory, reviews and delivery promises are seeded demonstration data. Completing checkout records a simulated order; no payment is taken."
+    },
+    "opening_hours": {
+      "timezone": "Europe/Istanbul",
+      "monday_to_saturday": "09:00-20:00",
+      "sunday": "10:00-18:00",
+      "note": "Opening hours describe shop availability. Delivery eligibility follows the published district-specific delivery data and the fixed demo clock."
+    },
+    "occasions": [
+      {
+        "occasion": "Birthday",
+        "suggestion": "Ask about favorite flower, color, budget, district and card message."
+      },
+      {
+        "occasion": "Thank-you gift",
+        "suggestion": "Small rose or tulip bouquets are available; exact price depends on SKU and delivery district."
+      },
+      {
+        "occasion": "Anniversary",
+        "suggestion": "Red roses are available in multiple sizes. Confirm stock, budget and delivery before recommending."
+      },
+      {
+        "occasion": "New home",
+        "suggestion": "White flowers and a separately priced vase are available. Include the vase in the quote if requested."
+      },
+      {
+        "occasion": "Congratulations",
+        "suggestion": "Ask the recipient color preference before choosing between pink, white and red."
+      }
+    ],
+    "wrapping": {
+      "included": "Standard natural paper wrapping is included in each listed product price.",
+      "color_preferences": "Ask the recipient flower-color preference; wrapping does not change the listed flower color.",
+      "custom": "Special packaging is an inquiry only. It has no published price and cannot be promised or added to a machine quote."
+    },
+    "card_message": {
+      "available": true,
+      "max_chars": 120,
+      "fee": 0,
+      "policy": "A card message is optional and must not exceed 120 characters. Preserve the customer wording. Ask for a shorter message when over the limit; do not silently truncate."
+    },
+    "published_addons": [
+      {
+        "id": "card_note",
+        "label": "Card message",
+        "fee": 0,
+        "currency": "TRY",
+        "description": "One optional card message, limited to 120 characters."
+      },
+      {
+        "id": "vase",
+        "label": "Glass vase",
+        "fee": 250,
+        "currency": "TRY",
+        "description": "One glass vase, charged in addition to bouquet and delivery.",
+        "quote_parameter": "addons=vase"
+      }
+    ],
+    "care": {
+      "general": "The included care card recommends a clean vase, fresh water and keeping the bouquet away from direct heat. Follow the care card supplied with the flowers.",
+      "promise": "No exact vase-life duration is promised in this catalog."
+    },
+    "replacements": {
+      "policy": "Fresh flowers are non-returnable. If damaged on delivery, a replacement is free within 2 hours.",
+      "process": "Report delivery damage within the stated 2-hour replacement window. The agent can explain this policy; this prototype cannot open or complete a replacement claim."
+    },
+    "custom_and_events": {
+      "inquiry": "Custom arrangements and event flowers are consultation inquiries, not immediately orderable catalog items.",
+      "ask_for": [
+        "Occasion",
+        "Requested date",
+        "District",
+        "Preferred flower and color",
+        "Approximate stem or bouquet count",
+        "Budget"
+      ],
+      "policy": "The agent may collect the brief and explain current catalog options. Do not invent a custom price, reserve inventory, promise a special lead time, or claim that a consultation has been booked."
+    },
+    "gift_privacy": {
+      "card": "A card message is printed as supplied. If the sender omits their name, do not invent a signature.",
+      "recipient": "Recipient contact information belongs in human checkout. Do not ask for full contact details in the public URL question.",
+      "pricing": "The agent may explain current prices to the sender. This demo does not implement gift receipts or recipient notification.",
+      "substitution": "No automatic flower or color substitutions. Explain the difference and obtain the customer choice before creating a revised quote."
+    },
+    "delivery": {
+      "districts": [
+        "Kadikoy",
+        "Besiktas",
+        "Uskudar",
+        "Sisli",
+        "Beyoglu",
+        "Atasehir"
+      ],
+      "policy": "Use the district fee and exact published same-day/next-day availability. No same-day promise outside a supported district. A requested deadline earlier than the published delivery window is not eligible.",
+      "schedule": "A next-day delivery window begins at next_day_from; this is not an exact appointment. No exact delivery minute or special rush service is promised."
+    },
+    "faq": [
+      {
+        "question": "Can you lower the price?",
+        "answer": "No. Published prices are the same for every customer. Ask about a smaller bouquet or a lower-priced eligible SKU instead."
+      },
+      {
+        "question": "Can you replace an out-of-stock bouquet?",
+        "answer": "Show available substitutes, disclose different flower, color or stem count, and ask the customer to choose. Preserve any hard requirements."
+      },
+      {
+        "question": "Is the vase included?",
+        "answer": "No. Standard wrapping is included; the optional glass vase costs 250 TRY in addition to bouquet and district delivery."
+      },
+      {
+        "question": "Can I send a long message?",
+        "answer": "The free card supports up to 120 characters. Ask for a shorter message if it is longer."
+      },
+      {
+        "question": "Can you deliver earlier than the listed window?",
+        "answer": "Only the published district delivery promises can be quoted. There is no separately priced rush delivery service."
+      },
+      {
+        "question": "Can you arrange flowers for an event?",
+        "answer": "The agent can discuss the event brief and current catalog, but this prototype cannot book a custom consultation, promise an event delivery, or quote an unlisted arrangement."
+      }
+    ]
   }
 }

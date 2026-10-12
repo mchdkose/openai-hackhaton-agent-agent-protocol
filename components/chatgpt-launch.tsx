@@ -15,8 +15,8 @@ function publicOrigin(value?: string) {
 }
 
 export function makeChatGPTPrompt(origin: string, tenant?: string, ask = DEFAULT_ASK) {
-  const url = tenant ? `${origin}/t/${tenant}` : origin;
-  return `${ask}\n\nUse the merchant agents on this site to complete the request: ${url}\n\nFirst open the link and read its AskAgent instructions. Ask through the GET question links and follow the returned continuation links. Check prices, stock, and delivery against the site’s evidence and quote links. Explain which requirements are met and give me the prepared product page to review. Do not place an order.`;
+  const url = tenant ? `${origin}/t/${tenant}/askagent?format=html` : `${origin}/askagent?format=html`;
+  return `${ask}\n\nUse the merchant agents on this site to complete the request: ${url}\n\nFirst open the link and read its AskAgent instructions. Ask through the GET question links using format=html. If an agent is processing, follow its returned status links until the completed LLM answer arrives. Then follow its continuation links, preserving the conversation handle. Check prices, stock, and delivery against the site’s evidence and quote links. Use the agents' actual replies; if a request fails, report that rather than inferring an answer from storefront pages. Explain which requirements are met and give me the prepared product page to review. Do not place an order.`;
 }
 
 export function ChatGPTLaunch({ siteOrigin, tenant, label = 'Try in ChatGPT', ask, compact = false }: { siteOrigin?: string; tenant?: string; label?: string; ask?: string; compact?: boolean }) {

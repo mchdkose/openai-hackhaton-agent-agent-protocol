@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://askagent-hackathon-demo.pages.dev/askagent-request.schema.json",
+  "title": "AskAgent question request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ask"],
+  "properties": {
+    "ask": {"type": "string", "minLength": 1, "maxLength": 2000},
+    "h": {"type": ["string", "null"], "pattern": "^h_[a-f0-9]{32}$"}
+  }
+}

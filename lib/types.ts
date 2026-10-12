@@ -25,6 +25,7 @@ export type DeliveryZone = {
 export type Tenant = {
   id: TenantId; name: string; tagline: string; role: 'yes' | 'no' | 'partial'; currency: 'TRY';
   timezone: string; locale: string; brand: { primary: string; accent: string };
+  business_context?: Record<string,unknown>;
   catalog: { as_of: string; products: Product[]; delivery_zones: DeliveryZone[]; returns: string; reviews: { verified_count: number; avg: number } };
   policy: { same_price_for_everyone: true; negotiation: false; session_ttl_minutes: number; quote_ttl_minutes: number; max_questions_per_session: number; menu: {id: string; label: string; fee: number}[] };
 };
@@ -42,11 +43,13 @@ export type ModelUsage = {calls:number;input_tokens:number;output_tokens:number;
 export type Mode = { extraction: 'model' | 'rules'; composition: 'model' | 'template'; referee: 'model_and_rules' | 'rules'; models: {extractor?: string; composer?: string; judge?: string}; fallback_reason?: string; usage?:ModelUsage };
 export type RefereeResult = { verdict: 'pass' | 'filtered'; checked: number; dropped: {text: string; reason: string; fact_refs: string[]}[]; mode: 'model_and_rules' | 'rules'; synthetic?: boolean };
 export type Session = { h: string; tenant: TenantId; created_at: number; expires_at: number; questions: number; requirements: Requirements; shown: string[]; quote?: Quote; note: string | null; turns: {at: string; summary: string; answer: string; answer_hash: string}[]; assistant: AssistantIdentity };
-export type NextLink = { rel: 'continue' | 'transcript' | 'evidence' | 'quote' | 'checkout' | 'discovery'; label: string; url: string; method: 'GET' };
+export type AgentJob = {id:string;tenant:TenantId;ask:string;h:string|null;origin:string;user_agent:string;created_at:number;expires_at:number;status:'queued'|'running'|'complete'|'error';attempts:number;lease_token?:string;lease_until?:number;result?:AskEnvelope;error?:{code:string;message:string}};
+export type NextLink = { rel: 'continue' | 'transcript' | 'evidence' | 'quote' | 'checkout' | 'discovery' | 'status'; label: string; url: string; method: 'GET' };
 export type AskEnvelope = {
-  protocol: 'askagent'; version: '0.1'; kind: 'discovery' | 'answer' | 'transcript' | 'evidence' | 'quote' | 'checkout' | 'error';
+  protocol: 'askagent'; version: '0.1'; kind: 'discovery' | 'pending' | 'answer' | 'transcript' | 'evidence' | 'quote' | 'checkout' | 'error';
   tenant: {id: TenantId; name: string}; scenario: {demo: true; clock: string; timezone: string; catalog_as_of: string};
   h?: string; session?: {h: string; expires_at: string}; status?: Verdict;
+  job?: {id:string;status:AgentJob['status'];expires_at:string};
   answer: { title: string; bullets: string[]; question: string | null };
   requirements?: Requirements; matches?: Match[]; alternatives?: Match[]; facts?: Fact[];
   quote?: Quote; transcript?: Session['turns']; capabilities?: string[];

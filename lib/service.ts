@@ -11,6 +11,7 @@ import {detectAssistant,guardRead,ProtocolError,reserveQuestion} from './session
 import {privacyHash,readLogs,readSession,recordLog,sessionKey,storageMode,transact,writeSession} from './store';
 import {judgeFrames} from './referee';
 import {currentModelUsage,withModelUsage} from './models';
+import {runMerchantAgent} from './merchant-agent';
 import type {AskEnvelope,PanelData,Requirements,Session,Tenant} from './types';
 
 function requireTenant(id:string):Tenant {const tenant=getTenant(id);if(!tenant)throw new ProtocolError('unknown_tenant','Shop not found.',404);return tenant;}
@@ -35,15 +36,23 @@ export async function handleAsk(tenantId:string,ask:string,h?:string|null,origin
 async function askWithUsage(tenantId:string,ask:string,h:string|null|undefined,origin:string|undefined,headers:Headers):Promise<AskEnvelope> {
   const started=performance.now(),tenant=await requireCurrentTenant(tenantId);
   if(!ask.trim())return discovery(tenantId,origin);
-  if(ask.length>500)throw new ProtocolError('query_too_long','Your question must be no longer than 500 characters.');
+  if(ask.length>2000)throw new ProtocolError('query_too_long','Your question must be no longer than 2,000 characters.');
   const session=await reserveQuestion(tenant,h||null,headers);
-  const extraction=await extractRequirements(ask,tenant,session.requirements);
-  session.requirements=extraction.requirements;session.note=extraction.requirements.note;
-  const selection=selectCatalog(tenant,session.requirements);
-  const composed=await compose(tenant,selection,session.requirements,extraction.mode);
-  const label={yes:'Yes — exact match',no:'Cannot meet these requirements',partial:'An alternative is available',needs_details:'One detail is missing'}[selection.verdict];
-  const title=`${tenant.name} — ${label}`;
-  const body:AskEnvelope={...envelope(tenant,'answer',session),status:selection.verdict,answer:{title,bullets:composed.bullets,question:selection.question},requirements:session.requirements,matches:selection.matches,alternatives:selection.alternatives,facts:selection.facts,mode:composed.mode,referee:composed.referee,next:[]};
+  let selection,composed,title:string,question:string|null;
+  if(process.env.NODE_ENV==='test'&&process.env.AGENT_TEST_MODEL!=='1'){
+    // Explicit offline test fixture only. Production never uses canned answers.
+    const extraction=await extractRequirements(ask,tenant,session.requirements);
+    session.requirements=extraction.requirements;session.note=extraction.requirements.note;
+    selection=selectCatalog(tenant,session.requirements);composed=await compose(tenant,selection,session.requirements,extraction.mode);
+    title=`${tenant.name} — ${selection.verdict}`;question=selection.question;
+  }else{
+    const result=await runMerchantAgent(tenant,session,ask);
+    session.requirements=result.requirements;session.note=result.requirements.note;
+    if(result.quote)session.quote=result.quote;
+    selection=result.selection;composed={bullets:result.answer.bullets,mode:result.mode,referee:result.referee};
+    title=result.answer.title;question=result.answer.question;
+  }
+  const body:AskEnvelope={...envelope(tenant,'answer',session),status:selection.verdict,answer:{title,bullets:composed.bullets,question},requirements:session.requirements,matches:selection.matches,alternatives:selection.alternatives,facts:selection.facts,mode:composed.mode,referee:composed.referee,next:[]};
   session.shown=[...selection.matches.filter(item=>item.eligible),...selection.alternatives,...selection.matches].map(item=>item.sku).filter((sku,index,all)=>all.indexOf(sku)===index);
   session.turns.push({at:new Date().toISOString(),summary:requirementsSummary(session.requirements),answer:[title,...body.answer.bullets].join('\n'),answer_hash:createHash('sha256').update(JSON.stringify(body.answer)).digest('hex')});
   session.turns=session.turns.slice(-60);
@@ -74,17 +83,18 @@ export async function handleSessionRoute(tenantId:string,route:'transcript'|'evi
       const zone=url.searchParams.get('zone')||session.requirements.zone;
       if(!zone)throw new ProtocolError('zone_required','Which delivery district?');
       const addons=(url.searchParams.get('addons')||'').split(',').filter(Boolean);
-      session.quote=buildQuote(tenant,session,sku,zone,addons,session.quote);await writeSession(session);body.quote=session.quote;
+      session.quote=buildQuote(tenant,session,sku,zone,addons,session.quote);await writeSession(session);body.quote=session.quote;body.next=nextLinks(tenant,session,origin,sku);
       body.status=session.quote.eligible?'yes':'no';
       body.answer={title:`${tenant.name} — ${session.quote.eligible?'verified quote':'requirements not met'}`,bullets:[`Product ${money(session.quote.product_price)} + delivery ${money(session.quote.delivery_fee)} + add-ons ${money(session.quote.addon_total)} = ${money(session.quote.total)}.`,session.quote.eta_text,'Everyone receives the same published price.',...session.quote.reasons.map(reason=>explainReason(reason,session.requirements.language))],question:null};
     }else{
-      if(!session.quote||session.quote.sku!==sku){body.answer={title:`${tenant.name} — request a quote first`,bullets:['Open the quote link to verify current price and delivery before transferring your selection to the shop.'],question:null};}
-      else{
-        session.quote=buildQuote(tenant,session,sku,session.quote.zone,session.quote.addons,session.quote);await writeSession(session);body.quote=session.quote;
-        const handoff=new URL(`/t/${tenant.id}/p/${sku}`,baseURL(origin));handoff.searchParams.set('h',session.h);
-        body.answer={title:`${tenant.name} — your selection is ready in the shop`,bullets:[`${money(session.quote.total)} · ${session.quote.eta_text}`,...(session.quote.eligible?[]:session.quote.reasons.map(reason=>explainReason(reason,session.requirements.language))),'Only a human-confirmed POST creates a demo order. A GET request never creates an order.'],question:null};
-        body.next=[{rel:'checkout',label:'Product page and demo order confirmation',url:handoff.toString(),method:'GET'},...body.next.filter(link=>link.rel!=='checkout')];
-      }
+      const previous=session.quote?.sku===sku?session.quote:undefined;
+      const zone=previous?.zone||session.requirements.zone;
+      if(!zone)throw new ProtocolError('zone_required','Which delivery district?');
+      session.quote=buildQuote(tenant,session,sku,zone,previous?.addons||[],previous);await writeSession(session);body.quote=session.quote;
+      body.status=session.quote.eligible?'yes':'no';
+      const handoff=new URL(`/t/${tenant.id}/p/${sku}`,baseURL(origin));handoff.searchParams.set('h',session.h);
+      body.answer={title:`${tenant.name} — ${session.quote.eligible?'your selection is ready in the shop':'review the selection requirements in the shop'}`,bullets:[`${money(session.quote.total)} · ${session.quote.eta_text}`,...(session.quote.eligible?[]:session.quote.reasons.map(reason=>explainReason(reason,session.requirements.language))),'Only a human-confirmed POST creates a demo order. A GET request never creates an order.'],question:null};
+      body.next=[{rel:'checkout',label:'Product page and demo order confirmation',url:handoff.toString(),method:'GET'},...nextLinks(tenant,session,origin,sku).filter(link=>link.rel!=='checkout')];
     }
   }
   await recordLog({tenant:tenant.id,route,session_hash:privacyHash(session.h),assistant:detectAssistant(request.headers.get('user-agent')),skus:sku?[sku]:[],ms:Math.round(performance.now()-started)});

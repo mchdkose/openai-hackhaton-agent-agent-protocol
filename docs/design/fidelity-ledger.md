@@ -8,6 +8,8 @@ The new page uses an 800 px document column, ordinary headings and HTTP examples
 
 The live merchant handoff was verified separately: the saved card message, 25-stem requirement, 1,500 TRY budget and 20:00 deadline appeared with a 1,370 TRY quote. Explicit confirmation created a simulated order. Its production screenshot is `artifacts/screenshots/production-order.png`. Native ChatGPT comparison has been observed; full dynamic conversation remains a separate compatibility check.
 
+The complete retained purchase interface is captured in `artifacts/screenshots/production-purchase-interface.png`: bouquet, product title, delivery-inclusive price breakdown, card message, explicit confirmation checkbox and original requirements. The published document is captured in `artifacts/screenshots/production-protocol-document.png`. Both were visually inspected. Native ChatGPT has successfully read discovery, but its attempted question requests returned web-fetch access errors; its earlier storefront comparison must not be treated as an agent response.
+
 ## Earlier marketing concept verification
 
 Reviewed on 12 October 2026. The primary concept and latest English browser render were opened together with `view_image`.

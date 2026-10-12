@@ -1,0 +1,69 @@
+{
+  "provider_probe": true,
+  "scope": "Local real-provider probe, not public HTTP latency",
+  "milliseconds": 29680,
+  "status": "yes",
+  "model_calls": 9,
+  "input_tokens": 25537,
+  "cost_usd": 0.012501890000000002,
+  "referee": "pass",
+  "trace": [
+    {
+      "milliseconds": 1458,
+      "tools": [
+        "read_business"
+      ],
+      "feedback": []
+    },
+    {
+      "milliseconds": 1352,
+      "tools": [
+        "evaluate_request"
+      ],
+      "feedback": []
+    },
+    {
+      "milliseconds": 1191,
+      "tools": [
+        "prepare_handoff"
+      ],
+      "feedback": []
+    },
+    {
+      "milliseconds": 2821,
+      "tools": [
+        "emit_answer"
+      ],
+      "feedback": []
+    },
+    {
+      "milliseconds": 2911,
+      "tools": [
+        "emit_answer"
+      ],
+      "feedback": [
+        [
+          "The cited facts support 25 stems and a 1,370 TRY total within the 1,500 TRY budget, but do not establish that the flowers are red roses or that 25 meets the requested minimum quantity.",
+          "The quoted delivery time of today by 19:30 meets the 20:00 deadline, but the cited facts do not establish that this delivery quote applies to Kadikoy.",
+          "The protocol facts establish that human confirmation is required and no order was created, but do not establish that a quote has been prepared."
+        ]
+      ]
+    },
+    {
+      "milliseconds": 4123,
+      "tools": [
+        "emit_answer"
+      ],
+      "feedback": [
+        [
+          "The cited facts support 25 stems and a 1,370 TRY total within the 1,500 TRY budget, but do not establish that the flowers are red roses or that 25 meets the requested minimum quantity.",
+          "The quoted delivery time of today by 19:30 meets the 20:00 deadline, but the cited facts do not establish that this delivery quote applies to Kadikoy.",
+          "The protocol facts establish that human confirmation is required and no order was created, but do not establish that a quote has been prepared."
+        ],
+        [
+          "The product specifications, prices, total, and budget comparison are supported, but the cited facts do not establish that the customer requested red roses or a 25-stem minimum."
+        ]
+      ]
+    }
+  ]
+}

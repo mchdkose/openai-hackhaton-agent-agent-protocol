@@ -19,6 +19,7 @@ export async function reserveQuestion(tenant: Tenant,h: string|null,headers: Hea
     const bucket=state.limits[key]||{count:0,expires:now+3600000};
     if(bucket.count >= Number(process.env.RATE_PER_IP_HOUR||300)) throw new ProtocolError('rate_limit','Too many requests. Please try again later.',429);
     let session=validHandle(h) ? state.sessions[sessionKey(tenant.id,h)] : undefined;
+    if(h&&!session)throw new ProtocolError('session_expired','This conversation has expired or belongs to another agent. Start a new conversation.',410);
     if(session && session.questions>=tenant.policy.max_questions_per_session) throw new ProtocolError('session_rate_limit','This conversation has reached its question limit. Please try again after the session expires.',429);
     if(!session){session={h:`h_${randomBytes(16).toString('hex')}`,tenant:tenant.id,created_at:now,expires_at:now+tenant.policy.session_ttl_minutes*60000,questions:0,requirements:blankRequirements(),shown:[],note:null,turns:[],assistant};}
     bucket.count++; state.limits[key]=bucket; session.questions++; session.assistant=assistant;

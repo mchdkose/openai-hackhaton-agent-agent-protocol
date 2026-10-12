@@ -1,19 +1,114 @@
 {
-  "updated_at": "2026-10-12T13:02:04Z",
+  "updated_at": "2026-10-12T14:41:57Z",
   "origin": "https://askagent-hackathon-demo.pages.dev",
+  "current_revision": {
+    "architecture": "Durable Cloudflare Queue with real tool-calling merchant agents",
+    "status": "deployed",
+    "production_proof": "passed",
+    "business_template_fallback": false,
+    "arbitrary_overall_model_deadline": false,
+    "question_transport": "Immediate pending envelope, followed by explicit status-link polling",
+    "job_storage": "Private existing D1 state; 30-minute TTL; tenant-scoped opaque token",
+    "queue_message": "Opaque jobId only",
+    "required_live_evidence": "One completed production job whose actual model usage.calls is greater than zero",
+    "validation": {
+      "job_tests_passed": 3,
+      "job_tests_total": 3,
+      "merchant_agent_tests_passed": 5,
+      "merchant_agent_tests_total": 5,
+      "fresh_typecheck": "passed"
+    },
+    "prior_evidence_notice": "Earlier template/rule and synchronous browser/native results below are historical evidence and do not prove this strict real-LLM revision.",
+    "queue": {
+      "binding": "ASKAGENT_JOBS",
+      "name": "askagent-questions",
+      "producer": "confirmed",
+      "consumer": "confirmed",
+      "concurrency": 3,
+      "batch_size": 1,
+      "max_retries": 2
+    },
+    "live_model_proof": {
+      "status": "passed",
+      "surface": "Codex in-app browser, production HTTPS",
+      "kind": "answer",
+      "mode": {
+        "extraction": "model",
+        "composition": "model",
+        "referee": "model_and_rules"
+      },
+      "models": {
+        "extractor": "openai/gpt-6-luna",
+        "composer": "openai/gpt-6-luna",
+        "judge": "openai/gpt-6.1-sol"
+      },
+      "usage": {
+        "calls": 10,
+        "input_tokens": 33207,
+        "output_tokens": 2647,
+        "cost_usd": 0.008446845
+      },
+      "referee": {
+        "verdict": "pass",
+        "checked": 4,
+        "dropped": 0
+      },
+      "scenario": "White roses as a thank-you gift to Besiktas tomorrow, within 800 TRY; preserve the card message and answer vase-fee and replacement-policy questions.",
+      "selection": {
+        "sku": "GB-12W",
+        "product_price_try": 590,
+        "delivery_fee_try": 120,
+        "total_try": 710,
+        "eligible": true,
+        "vase_fee_try": 250,
+        "vase_omitted_to_respect_budget": true,
+        "card_message_preserved": true
+      },
+      "evidence": "The final public GPT-6 Luna job returned a real generated answer and eligible 710 TRY quote. Ten provider calls and four independently checked claims were verified. Checkout and the human product page showed 710 TRY and the correct saved note, both as visible server-rendered text and a prefilled input. No order was placed.",
+      "worker_version_prefix": "efffa7ce",
+      "screenshots": [
+        "artifacts/screenshots/production-real-agent-answer.png",
+        "artifacts/screenshots/production-purchase-interface.png"
+      ],
+      "input_token_comparison": {
+        "previous_verified_input_tokens": 253536,
+        "current_input_tokens": 33207,
+        "reduction_percent": 86.9
+      },
+      "observed_browser_elapsed_seconds": 75,
+      "timing_scope": "Includes browser operations; not measured server latency or a guaranteed completion time",
+      "observed_times_utc": {
+        "job_created": "14:05:20.643",
+        "session_started": "14:05:27.979",
+        "quote_issued": "14:05:37.969"
+      }
+    },
+    "native_completion": "passed",
+    "model_change": {
+      "requested_primary": "GPT-6 Luna",
+      "active_primary": "openai/gpt-6-luna",
+      "status": "Verified in production and native ChatGPT"
+    },
+    "worker_version_prefix": "efffa7ce",
+    "human_order_placed_in_final_test": false
+  },
   "deployment": {
     "status": "passed",
     "platform": "Cloudflare Pages proxy and Cloudflare Worker",
-    "worker_version": "a136874f-f895-4bf6-8813-2babb8852265",
-    "custom_domain": false
+    "custom_domain": false,
+    "traffic_percent": 100,
+    "secret_and_d1_bindings_preserved": true,
+    "scope": "Final verified GPT-6 Luna durable real-agent revision",
+    "overall_model_deadline": false,
+    "worker_version_prefix": "efffa7ce"
   },
   "browser": {
     "surface": "Codex in-app browser",
     "merchant_flow_verified_worker_version": "c6c62718-f549-44f3-8cad-1ad760326c6c",
     "homepage": {
       "status": "passed",
-      "verified_worker_version": "a136874f-f895-4bf6-8813-2babb8852265",
-      "evidence": "The published English protocol-document homepage was confirmed in the production in-app browser on desktop.",
+      "verified_worker_version": "5d73efb7-e69f-4999-ad46-051284a9c129",
+      "evidence": "The fresh production document rendered AskAgent \u2014 Protocol v0.1 and the Test this scenario section. The production screenshot was updated after the final deployment.",
       "screenshot": "artifacts/screenshots/production-protocol-document.png"
     },
     "public_example_get": {
@@ -23,7 +118,8 @@
       "checkout_envelope": "passed",
       "card_message_preserved": true,
       "quote_total_try": 1370,
-      "evidence": "The complete production GET chain worked in the in-app browser: published example question, returned Continue link, verified quote, and checkout envelope. The saved card message persisted and the quote total was 1,370 TRY. This browser result is separate from native ChatGPT compatibility."
+      "evidence": "The complete production GET chain worked in the in-app browser: published example question, returned Continue link, verified quote, and checkout envelope. The saved card message persisted and the quote total was 1,370 TRY. This browser result is separate from native ChatGPT compatibility.",
+      "verified_worker_version": "a136874f-f895-4bf6-8813-2babb8852265"
     },
     "merchant_comparison": {
       "status": "passed",
@@ -97,6 +193,19 @@
       "evidence": "With fictional recipient/address inputs and the confirmation checkbox selected, Create Demo Order returned a confirmation displaying the correct total, delivery, and no-payment notice.",
       "screenshot": "artifacts/screenshots/production-order.png",
       "idempotency": "Not repeated in the production browser; covered by the local HTTP smoke test."
+    },
+    "final_html_question": {
+      "status": "passed",
+      "verified_worker_version": "5d73efb7-e69f-4999-ad46-051284a9c129",
+      "requirements_stems_min": 25,
+      "excluded_sku": "GB15R",
+      "excluded_sku_eligible": false,
+      "selected_product": "25 red roses",
+      "total_try": 1370,
+      "operation_mode": "Honest template and rule fallback",
+      "browser_navigation_ms": 5121,
+      "timing_scope": "Observed browser navigation duration, not measured server latency",
+      "evidence": "The fresh published HTML question link preserved the explicit 25-stem requirement, rejected GB15R, and displayed only the eligible 25-red-rose response at 1,370 TRY."
     }
   },
   "prepared_order_fix": {
@@ -106,10 +215,13 @@
     "production_retest": "Playground button retest pending; direct merchant handoff has passed"
   },
   "native_fetch_latency_fix": {
-    "status": "deployed",
+    "status": "superseded",
     "change": "All model stages share one default 7000 ms deadline; later stages use the remaining time or return the existing honest provider fallback.",
     "validation": "The focused mocked-provider test and npm run typecheck passed.",
-    "production_retest": "Browser example GET passed; native agent question remains unverified"
+    "production_retest": "Fresh browser HTML question GET passed with honest fallback; the final native ChatGPT question test is pending.",
+    "default_budget_ms": 7000,
+    "runtime_budget_ms": 2000,
+    "superseded_by": "Durable async real-agent jobs without an arbitrary overall model deadline"
   },
   "local_revision_validation": {
     "homepage": {
@@ -130,7 +242,11 @@
     },
     "typecheck": {
       "status": "passed",
-      "scope": "Before the final quantity-extraction revision"
+      "scope": "After the checkout self-verification revision"
+    },
+    "final_deployment_build": {
+      "status": "passed",
+      "worker_version": "5d73efb7-e69f-4999-ad46-051284a9c129"
     }
   },
   "automated_http_smoke": {
@@ -152,24 +268,81 @@
       "evidence": "ChatGPT's web tool could read all three merchant AskAgent discovery endpoints."
     },
     "dynamic_agent_question": {
-      "status": "unverified",
-      "evidence": "ChatGPT's web tool could not reach either the short question GET or the original question GET. A later direct click of the published question link reported 400 Timeout fetching. No response from the site's agent was observed; this web-tool error does not establish the application's HTTP response status."
+      "status": "passed",
+      "evidence": "The latest native ChatGPT request to the exact HTML question URL received the real merchant-agent HTTP 200 response and a conversation handle. No raw handle is stored in this evidence."
     },
     "dynamic_order_preparation": {
-      "status": "unverified",
-      "evidence": "ChatGPT reported an endpoint timeout in the earlier attempt. Later question URLs were inaccessible to its web tool; actual conversation, quote, card-message continuity, and session checkout could not be verified."
+      "status": "partial",
+      "evidence": "The real question, continuation, catalog evidence, and quote succeeded. Checkout still returned request a quote first despite the verified quote; its deterministic self-verification fix awaits deployment."
     },
     "card_message_continuity": {
-      "status": "unverified"
+      "status": "passed",
+      "evidence": "Native ChatGPT followed the returned continuation and verified that the card message persisted."
     },
     "session_checkout": {
-      "status": "unverified"
+      "status": "partial",
+      "evidence": "Checkout was reachable but returned request a quote first; the final human handoff from native ChatGPT is not yet verified."
     },
     "latest_revision_retest": "partial",
-    "latest_revision_evidence": "New native ChatGPT attempts read all three discovery endpoints, but question URL access and a direct question-link click failed. No site-agent reply, conversation handle, quote, or checkout was returned. The web tool presented an older homepage without the newly published Open example question link.",
-    "web_tool_homepage_freshness": "An older homepage was observed; production in-app browser showed the revised document."
+    "latest_revision_evidence": "Native ChatGPT received the actual merchant-agent answer, conversation handle, continued card message, catalog evidence, and 1,370 TRY quote. Checkout remains the unfinished last step.",
+    "web_tool_homepage_freshness": "An older homepage was observed; production in-app browser showed the revised document.",
+    "final_deployment_retest": "partial",
+    "catalog_evidence": {
+      "status": "passed",
+      "evidence": "Native ChatGPT verified returned catalog evidence, stock, and today-at-19:30 delivery."
+    },
+    "quote": {
+      "status": "passed",
+      "total_try": 1370,
+      "delivery": "today at 19:30",
+      "evidence": "Native ChatGPT verified the source-backed deterministic quote."
+    },
+    "current_async_revision": {
+      "status": "passed",
+      "question_completion": "passed",
+      "poll_attempt": 8,
+      "mode": {
+        "extraction": "model",
+        "composition": "model",
+        "referee": "model_and_rules"
+      },
+      "conversation_handle_received": true,
+      "usage_verification": "passed",
+      "final_human_handoff": "passed",
+      "evidence": "Native ChatGPT retrieved the final Luna answer at polling attempt 8, verified its ten actual model calls and independent referee pass, and followed checkout to the actual 710 TRY product page with the correct visible saved note. IAB separately confirmed that the input was prefilled correctly. No order was placed.",
+      "verified_total_try": 710,
+      "models": {
+        "extractor": "openai/gpt-6-luna",
+        "composer": "openai/gpt-6-luna",
+        "judge": "openai/gpt-6.1-sol"
+      },
+      "usage": {
+        "calls": 10,
+        "input_tokens": 33207,
+        "output_tokens": 2647,
+        "cost_usd": 0.008446845
+      },
+      "card_message_readability": {
+        "status": "passed",
+        "evidence": "The correct saved note is visible as server-rendered text read by native ChatGPT; the in-app browser also confirmed the actual input value."
+      },
+      "worker_version_prefix": "efffa7ce",
+      "order_placed": false
+    }
   },
   "cross_assistant_transcript": {
     "status": "untested"
+  },
+  "checkout_self_verification_fix": {
+    "status": "deployed",
+    "deployment": "Confirmed in final efffa7ce release",
+    "change": "GET checkout verifies a known SKU against saved delivery zone and current requirements, persists a deterministic quote, and returns the human handoff without creating an order. Quote-response checkout URLs carry quote_id to distinguish earlier retrieved responses.",
+    "validation": {
+      "backend_core_tests_passed": 26,
+      "backend_core_tests_total": 26,
+      "typecheck": "passed"
+    },
+    "human_post_guard": "unchanged",
+    "production_retest": "Checkout and product handoff passed in the final IAB and native ChatGPT flow"
   }
 }

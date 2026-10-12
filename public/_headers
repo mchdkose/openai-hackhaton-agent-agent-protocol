@@ -1,2 +1,6 @@
-/_next/static/*
-  Cache-Control: public,max-age=31536000,immutable
+/askagent-client.mjs
+  Access-Control-Allow-Origin: *
+/askagent-request.schema.json
+  Access-Control-Allow-Origin: *
+/askagent-response.schema.json
+  Access-Control-Allow-Origin: *

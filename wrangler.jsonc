@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "askagent-demo",
   "account_id": "e5539802cd5992acd0fe5c053d68ca7d",
-  "main": ".open-next/worker.js",
+  "main": "worker.mjs",
   "compatibility_date": "2026-10-12",
   "compatibility_flags": [
     "nodejs_compat",
@@ -31,14 +31,31 @@
     "BASE_URL": "https://askagent-hackathon-demo.pages.dev",
     "NEXT_PUBLIC_SITE_URL": "https://askagent-hackathon-demo.pages.dev",
     "DEMO_CLOCK_ISO": "2026-10-12T17:00:00+03:00",
-    "EXTRACT_MODEL": "anthropic/claude-haiku-5.5",
-    "COMPOSE_MODEL": "anthropic/claude-sonnet-5.5",
+    "EXTRACT_MODEL": "openai/gpt-6-luna",
+    "COMPOSE_MODEL": "openai/gpt-6-luna",
     "REFEREE_MODEL": "openai/gpt-6.1-sol",
-    "MODEL_TIMEOUT_MS": "12000",
-    "MODEL_BUDGET_MS": "2000"
+    "MODEL_TIMEOUT_MS": "60000",
+    "AGENT_MODEL_TIMEOUT_MS": "60000"
   },
   "observability": {
     "enabled": true
   },
-  "preview_urls": true
+  "preview_urls": true,
+  "queues": {
+    "producers": [
+      {
+        "binding": "ASKAGENT_JOBS",
+        "queue": "askagent-questions"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "askagent-questions",
+        "max_batch_size": 1,
+        "max_batch_timeout": 1,
+        "max_retries": 2,
+        "max_concurrency": 3
+      }
+    ]
+  }
 }

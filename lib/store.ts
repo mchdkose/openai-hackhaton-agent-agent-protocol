@@ -1,12 +1,12 @@
 import {randomBytes, createHmac} from 'node:crypto';
 import path from 'node:path';
 import {getCloudflareContext} from '@opennextjs/cloudflare';
-import type {AuditLog, CatalogOverride, Session} from './types';
+import type {AgentJob,AuditLog, CatalogOverride, Session} from './types';
 
-export type State = {sessions: Record<string, Session>; logs: AuditLog[]; limits: Record<string, {count: number; expires: number}>; orders: Record<string, {id: string; total: number; created_at: number}>;catalog_overrides:Record<string,CatalogOverride>};
+export type State = {sessions: Record<string, Session>; logs: AuditLog[]; limits: Record<string, {count: number; expires: number}>; orders: Record<string, {id: string; total: number; created_at: number}>;catalog_overrides:Record<string,CatalogOverride>;jobs:Record<string,AgentJob>};
 export type D1Statement = {bind(...values:unknown[]):D1Statement;first<T>():Promise<T|null>;run():Promise<unknown>};
 export type D1DatabaseLike = {prepare(query:string):D1Statement};
-const empty = (): State => ({sessions:{},logs:[],limits:{},orders:{},catalog_overrides:{}});
+const empty = (): State => ({sessions:{},logs:[],limits:{},orders:{},catalog_overrides:{},jobs:{}});
 const runtime = globalThis as typeof globalThis & {__askagentStore?: {queue: Promise<unknown>; secret?: string};WebSocketPair?:unknown};
 // Worker module evaluation must not generate random values or start I/O. Only
 // the local Node fallback needs this queue and a lazily created fallback key.
@@ -63,6 +63,7 @@ function prune(state: State) {
   for (const [key,value] of Object.entries(state.sessions)) if (value.expires_at<=now) delete state.sessions[key];
   for (const [key,value] of Object.entries(state.limits)) if (value.expires<=now) delete state.limits[key];
   for (const [key,value] of Object.entries(state.orders)) if (value.created_at+86400000<=now) delete state.orders[key];
+  for (const [key,value] of Object.entries(state.jobs)) if (value.expires_at<=now) delete state.jobs[key];
   state.logs=state.logs.filter(log => new Date(log.ts).getTime()+86400000>now).slice(-500);
 }
 export async function d1Transact<T>(db:D1DatabaseLike,fn:(state:State)=>T|Promise<T>):Promise<T>{
